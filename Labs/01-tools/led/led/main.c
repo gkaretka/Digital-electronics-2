@@ -39,6 +39,37 @@
  * Purpose:  Toggle one LED and use delay library.
  * Returns:  none
  **********************************************************************/
+
+// Morse code array A-Z
+char *morse_alphabet[26] = {
+    ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--",
+    "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."
+};
+
+// Morse code array 0 - 9
+char *morse_numbers[10] = {
+    "-----", ".----", "..---", "...--", "....-", ".....", "-....", "--...", "---..", "----."
+};
+
+#define ONE_SPACE		250
+
+#define DOT '.'
+#define DOT_DELAY		ONE_SPACE
+
+#define COMMA '-'
+#define COMMA_DELAY	    (ONE_SPACE*3)
+
+#define SPACE '/'
+#define SPACE_DELAY	    (ONE_SPACE*3)
+
+void dispaly_message_morse_code(char *msg);
+void display_char_in_morse_code(char c);
+void ll_display_char_in_morse_code(char *c);
+
+void send_space(void);
+void send_comma(void);
+void send_dot(void);
+
 int main(void)
 {
     // Set pin as output in Data Direction Register
@@ -52,14 +83,67 @@ int main(void)
     // Infinite loop
     while (1)
     {
-        // Pause several milliseconds
-        _delay_ms(SHORT_DELAY);
-
-        // Invert LED in Data Register
-        // PORTB = PORTB xor 0010 0000
-        PORTB = PORTB ^ (1<<LED_GREEN);
+        dispaly_message_morse_code("DE2/");
     }
 
     // Will never reach this
     return 0;
+}
+
+void dispaly_message_morse_code(char *msg)
+{
+    char *msg_ptr = msg;
+    while(*msg_ptr != '\0') {
+        if (*msg_ptr == '/') {
+            send_space(); 
+        } else {
+            display_char_in_morse_code(*msg_ptr);
+        }                
+        msg_ptr++;
+    }
+}
+
+void display_char_in_morse_code(char c)
+{
+    if (c >= 65 && c <= 95) {
+        ll_display_char_in_morse_code(morse_alphabet[(uint8_t)c - 65]);
+    } else if (c >= 97 && c <= 122) {
+        ll_display_char_in_morse_code(morse_alphabet[(uint8_t)c - 97]);
+    } else if (c >= 48 && c <= 57) {
+        ll_display_char_in_morse_code(morse_numbers[(uint8_t)c - 48]);
+    }
+}
+
+void ll_display_char_in_morse_code(char *char_codes)
+{
+    char *msg_ptr = char_codes;
+    while(*msg_ptr != '\0') {
+        if (*msg_ptr == COMMA)
+            send_comma();
+        else if (*msg_ptr == DOT)
+            send_dot();
+        msg_ptr++;
+    }        
+}
+
+void send_space(void)
+{
+    PORTB &= ~(1 << LED_GREEN);
+    _delay_ms(SPACE_DELAY);
+}
+
+void send_comma(void)
+{
+    PORTB |= (1 << LED_GREEN);
+    _delay_ms(COMMA_DELAY);
+    PORTB &= ~(1 << LED_GREEN);
+    _delay_ms(ONE_SPACE);
+}
+
+void send_dot(void)
+{
+    PORTB |= (1 << LED_GREEN);
+    _delay_ms(DOT_DELAY);
+    PORTB &= ~(1 << LED_GREEN);
+    _delay_ms(ONE_SPACE);
 }
