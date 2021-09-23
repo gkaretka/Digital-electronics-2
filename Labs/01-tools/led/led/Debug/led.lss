@@ -3,29 +3,29 @@ led.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  00000168  2**0
+  0 .data         000000ac  00800100  000001e2  00000256  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000114  00000000  00000000  00000054  2**1
+  1 .text         000001e2  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  00000168  2**0
+  2 .comment      00000030  00000000  00000000  00000302  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000198  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000334  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000050  00000000  00000000  000001d8  2**0
+  4 .debug_aranges 00000050  00000000  00000000  00000374  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000097a  00000000  00000000  00000228  2**0
+  5 .debug_info   0000099c  00000000  00000000  000003c4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000709  00000000  00000000  00000ba2  2**0
+  6 .debug_abbrev 0000072f  00000000  00000000  00000d60  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000396  00000000  00000000  000012ab  2**0
+  7 .debug_line   0000038c  00000000  00000000  0000148f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  0000009c  00000000  00000000  00001644  2**2
+  8 .debug_frame  0000009c  00000000  00000000  0000181c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000430  00000000  00000000  000016e0  2**0
+  9 .debug_str    00000430  00000000  00000000  000018b8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000002b5  00000000  00000000  00001b10  2**0
+ 10 .debug_loc    000002b5  00000000  00000000  00001ce8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000040  00000000  00000000  00001dc5  2**0
+ 11 .debug_ranges 00000040  00000000  00000000  00001f9d  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -70,29 +70,29 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e4 e1       	ldi	r30, 0x14	; 20
+  7a:	e2 ee       	ldi	r30, 0xE2	; 226
   7c:	f1 e0       	ldi	r31, 0x01	; 1
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
   82:	0d 92       	st	X+, r0
-  84:	a0 30       	cpi	r26, 0x00	; 0
+  84:	ac 3a       	cpi	r26, 0xAC	; 172
   86:	b1 07       	cpc	r27, r17
   88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
-  8a:	0e 94 7d 00 	call	0xfa	; 0xfa <main>
-  8e:	0c 94 88 00 	jmp	0x110	; 0x110 <_exit>
+  8a:	0e 94 e4 00 	call	0x1c8	; 0x1c8 <main>
+  8e:	0c 94 ef 00 	jmp	0x1de	; 0x1de <_exit>
 
 00000092 <__bad_interrupt>:
   92:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
-00000096 <send_comma>:
+00000096 <send_space>:
 /*
- * Low level send comma by manipulating pin and delaying
+ * Low level send space by manipulating pin and delaying
  */
-void send_comma(void)
+void send_space(void)
 {
-    PORTB |= (1 << LED_GREEN);
+    PORTB &= ~(1 << LED_GREEN);
   96:	85 b1       	in	r24, 0x05	; 5
-  98:	80 62       	ori	r24, 0x20	; 32
+  98:	8f 7d       	andi	r24, 0xDF	; 223
   9a:	85 b9       	out	0x05, r24	; 5
 	#else
 		//round up by default
@@ -106,35 +106,35 @@ void send_comma(void)
   a2:	21 50       	subi	r18, 0x01	; 1
   a4:	80 40       	sbci	r24, 0x00	; 0
   a6:	90 40       	sbci	r25, 0x00	; 0
-  a8:	e1 f7       	brne	.-8      	; 0xa2 <send_comma+0xc>
-  aa:	00 c0       	rjmp	.+0      	; 0xac <send_comma+0x16>
+  a8:	e1 f7       	brne	.-8      	; 0xa2 <send_space+0xc>
+  aa:	00 c0       	rjmp	.+0      	; 0xac <send_space+0x16>
   ac:	00 00       	nop
+  ae:	08 95       	ret
+
+000000b0 <send_comma>:
+/*
+ * Low level send comma by manipulating pin and delaying
+ */
+void send_comma(void)
+{
+    PORTB |= (1 << LED_GREEN);
+  b0:	85 b1       	in	r24, 0x05	; 5
+  b2:	80 62       	ori	r24, 0x20	; 32
+  b4:	85 b9       	out	0x05, r24	; 5
+  b6:	2f ef       	ldi	r18, 0xFF	; 255
+  b8:	8d e3       	ldi	r24, 0x3D	; 61
+  ba:	99 e4       	ldi	r25, 0x49	; 73
+  bc:	21 50       	subi	r18, 0x01	; 1
+  be:	80 40       	sbci	r24, 0x00	; 0
+  c0:	90 40       	sbci	r25, 0x00	; 0
+  c2:	e1 f7       	brne	.-8      	; 0xbc <send_comma+0xc>
+  c4:	00 c0       	rjmp	.+0      	; 0xc6 <send_comma+0x16>
+  c6:	00 00       	nop
     _delay_ms(COMMA_DELAY);
     
     PORTB &= ~(1 << LED_GREEN);
-  ae:	85 b1       	in	r24, 0x05	; 5
-  b0:	8f 7d       	andi	r24, 0xDF	; 223
-  b2:	85 b9       	out	0x05, r24	; 5
-  b4:	2f ef       	ldi	r18, 0xFF	; 255
-  b6:	89 e6       	ldi	r24, 0x69	; 105
-  b8:	98 e1       	ldi	r25, 0x18	; 24
-  ba:	21 50       	subi	r18, 0x01	; 1
-  bc:	80 40       	sbci	r24, 0x00	; 0
-  be:	90 40       	sbci	r25, 0x00	; 0
-  c0:	e1 f7       	brne	.-8      	; 0xba <send_comma+0x24>
-  c2:	00 c0       	rjmp	.+0      	; 0xc4 <send_comma+0x2e>
-  c4:	00 00       	nop
-  c6:	08 95       	ret
-
-000000c8 <send_dot>:
-/*
- * Low level send dot by manipulating pin and delaying
- */
-void send_dot(void)
-{
-    PORTB |= (1 << LED_GREEN);
   c8:	85 b1       	in	r24, 0x05	; 5
-  ca:	80 62       	ori	r24, 0x20	; 32
+  ca:	8f 7d       	andi	r24, 0xDF	; 223
   cc:	85 b9       	out	0x05, r24	; 5
   ce:	2f ef       	ldi	r18, 0xFF	; 255
   d0:	89 e6       	ldi	r24, 0x69	; 105
@@ -142,55 +142,227 @@ void send_dot(void)
   d4:	21 50       	subi	r18, 0x01	; 1
   d6:	80 40       	sbci	r24, 0x00	; 0
   d8:	90 40       	sbci	r25, 0x00	; 0
-  da:	e1 f7       	brne	.-8      	; 0xd4 <send_dot+0xc>
-  dc:	00 c0       	rjmp	.+0      	; 0xde <send_dot+0x16>
+  da:	e1 f7       	brne	.-8      	; 0xd4 <send_comma+0x24>
+  dc:	00 c0       	rjmp	.+0      	; 0xde <send_comma+0x2e>
   de:	00 00       	nop
+  e0:	08 95       	ret
+
+000000e2 <send_dot>:
+/*
+ * Low level send dot by manipulating pin and delaying
+ */
+void send_dot(void)
+{
+    PORTB |= (1 << LED_GREEN);
+  e2:	85 b1       	in	r24, 0x05	; 5
+  e4:	80 62       	ori	r24, 0x20	; 32
+  e6:	85 b9       	out	0x05, r24	; 5
+  e8:	2f ef       	ldi	r18, 0xFF	; 255
+  ea:	89 e6       	ldi	r24, 0x69	; 105
+  ec:	98 e1       	ldi	r25, 0x18	; 24
+  ee:	21 50       	subi	r18, 0x01	; 1
+  f0:	80 40       	sbci	r24, 0x00	; 0
+  f2:	90 40       	sbci	r25, 0x00	; 0
+  f4:	e1 f7       	brne	.-8      	; 0xee <send_dot+0xc>
+  f6:	00 c0       	rjmp	.+0      	; 0xf8 <send_dot+0x16>
+  f8:	00 00       	nop
     _delay_ms(DOT_DELAY);
     
     PORTB &= ~(1 << LED_GREEN);
-  e0:	85 b1       	in	r24, 0x05	; 5
-  e2:	8f 7d       	andi	r24, 0xDF	; 223
-  e4:	85 b9       	out	0x05, r24	; 5
-  e6:	2f ef       	ldi	r18, 0xFF	; 255
-  e8:	89 e6       	ldi	r24, 0x69	; 105
-  ea:	98 e1       	ldi	r25, 0x18	; 24
-  ec:	21 50       	subi	r18, 0x01	; 1
-  ee:	80 40       	sbci	r24, 0x00	; 0
-  f0:	90 40       	sbci	r25, 0x00	; 0
-  f2:	e1 f7       	brne	.-8      	; 0xec <send_dot+0x24>
-  f4:	00 c0       	rjmp	.+0      	; 0xf6 <send_dot+0x2e>
-  f6:	00 00       	nop
-  f8:	08 95       	ret
+  fa:	85 b1       	in	r24, 0x05	; 5
+  fc:	8f 7d       	andi	r24, 0xDF	; 223
+  fe:	85 b9       	out	0x05, r24	; 5
+ 100:	2f ef       	ldi	r18, 0xFF	; 255
+ 102:	89 e6       	ldi	r24, 0x69	; 105
+ 104:	98 e1       	ldi	r25, 0x18	; 24
+ 106:	21 50       	subi	r18, 0x01	; 1
+ 108:	80 40       	sbci	r24, 0x00	; 0
+ 10a:	90 40       	sbci	r25, 0x00	; 0
+ 10c:	e1 f7       	brne	.-8      	; 0x106 <send_dot+0x24>
+ 10e:	00 c0       	rjmp	.+0      	; 0x110 <send_dot+0x2e>
+ 110:	00 00       	nop
+ 112:	08 95       	ret
 
-000000fa <main>:
+00000114 <ll_display_char_in_morse_code>:
+/*
+ * Low level function for Morse code display, check one by one char and 
+ * performs action accordingly by sending COMMA or DOT
+ */
+void ll_display_char_in_morse_code(char *char_codes)
+{
+ 114:	cf 93       	push	r28
+ 116:	df 93       	push	r29
+ 118:	ec 01       	movw	r28, r24
+    char *msg_ptr = char_codes;
+    while(*msg_ptr != '\0') {
+ 11a:	0a c0       	rjmp	.+20     	; 0x130 <ll_display_char_in_morse_code+0x1c>
+        if (*msg_ptr == COMMA) send_comma();
+ 11c:	8d 32       	cpi	r24, 0x2D	; 45
+ 11e:	19 f4       	brne	.+6      	; 0x126 <ll_display_char_in_morse_code+0x12>
+ 120:	0e 94 58 00 	call	0xb0	; 0xb0 <send_comma>
+ 124:	04 c0       	rjmp	.+8      	; 0x12e <ll_display_char_in_morse_code+0x1a>
+        else if (*msg_ptr == DOT) send_dot();
+ 126:	8e 32       	cpi	r24, 0x2E	; 46
+ 128:	11 f4       	brne	.+4      	; 0x12e <ll_display_char_in_morse_code+0x1a>
+ 12a:	0e 94 71 00 	call	0xe2	; 0xe2 <send_dot>
+
+        msg_ptr++;
+ 12e:	21 96       	adiw	r28, 0x01	; 1
+ * performs action accordingly by sending COMMA or DOT
+ */
+void ll_display_char_in_morse_code(char *char_codes)
+{
+    char *msg_ptr = char_codes;
+    while(*msg_ptr != '\0') {
+ 130:	88 81       	ld	r24, Y
+ 132:	81 11       	cpse	r24, r1
+ 134:	f3 cf       	rjmp	.-26     	; 0x11c <ll_display_char_in_morse_code+0x8>
+        if (*msg_ptr == COMMA) send_comma();
+        else if (*msg_ptr == DOT) send_dot();
+
+        msg_ptr++;
+    }        
+}
+ 136:	df 91       	pop	r29
+ 138:	cf 91       	pop	r28
+ 13a:	08 95       	ret
+
+0000013c <display_char_in_morse_code>:
+/*
+ * Look-up table for characters in Morse code alphabet/numbers. 
+ */
+void display_char_in_morse_code(char c)
+{
+    if (c >= 65 && c <= 95) { // if char is ASCII A-Z
+ 13c:	9f eb       	ldi	r25, 0xBF	; 191
+ 13e:	98 0f       	add	r25, r24
+ 140:	9f 31       	cpi	r25, 0x1F	; 31
+ 142:	68 f4       	brcc	.+26     	; 0x15e <display_char_in_morse_code+0x22>
+        ll_display_char_in_morse_code(morse_alphabet[(uint8_t)c - 65]);
+ 144:	e8 2f       	mov	r30, r24
+ 146:	f0 e0       	ldi	r31, 0x00	; 0
+ 148:	e1 54       	subi	r30, 0x41	; 65
+ 14a:	f1 09       	sbc	r31, r1
+ 14c:	ee 0f       	add	r30, r30
+ 14e:	ff 1f       	adc	r31, r31
+ 150:	ec 5e       	subi	r30, 0xEC	; 236
+ 152:	fe 4f       	sbci	r31, 0xFE	; 254
+ 154:	80 81       	ld	r24, Z
+ 156:	91 81       	ldd	r25, Z+1	; 0x01
+ 158:	0e 94 8a 00 	call	0x114	; 0x114 <ll_display_char_in_morse_code>
+ 15c:	08 95       	ret
+    } else if (c >= 97 && c <= 122) { // if char is ASCII a-z
+ 15e:	9f e9       	ldi	r25, 0x9F	; 159
+ 160:	98 0f       	add	r25, r24
+ 162:	9a 31       	cpi	r25, 0x1A	; 26
+ 164:	68 f4       	brcc	.+26     	; 0x180 <display_char_in_morse_code+0x44>
+        ll_display_char_in_morse_code(morse_alphabet[(uint8_t)c - 97]);
+ 166:	e8 2f       	mov	r30, r24
+ 168:	f0 e0       	ldi	r31, 0x00	; 0
+ 16a:	e1 56       	subi	r30, 0x61	; 97
+ 16c:	f1 09       	sbc	r31, r1
+ 16e:	ee 0f       	add	r30, r30
+ 170:	ff 1f       	adc	r31, r31
+ 172:	ec 5e       	subi	r30, 0xEC	; 236
+ 174:	fe 4f       	sbci	r31, 0xFE	; 254
+ 176:	80 81       	ld	r24, Z
+ 178:	91 81       	ldd	r25, Z+1	; 0x01
+ 17a:	0e 94 8a 00 	call	0x114	; 0x114 <ll_display_char_in_morse_code>
+ 17e:	08 95       	ret
+    } else if (c >= 48 && c <= 57) { // if char is ASCII 0-9
+ 180:	90 ed       	ldi	r25, 0xD0	; 208
+ 182:	98 0f       	add	r25, r24
+ 184:	9a 30       	cpi	r25, 0x0A	; 10
+ 186:	58 f4       	brcc	.+22     	; 0x19e <display_char_in_morse_code+0x62>
+        ll_display_char_in_morse_code(morse_numbers[(uint8_t)c - 48]);
+ 188:	e8 2f       	mov	r30, r24
+ 18a:	f0 e0       	ldi	r31, 0x00	; 0
+ 18c:	f0 97       	sbiw	r30, 0x30	; 48
+ 18e:	ee 0f       	add	r30, r30
+ 190:	ff 1f       	adc	r31, r31
+ 192:	e0 50       	subi	r30, 0x00	; 0
+ 194:	ff 4f       	sbci	r31, 0xFF	; 255
+ 196:	80 81       	ld	r24, Z
+ 198:	91 81       	ldd	r25, Z+1	; 0x01
+ 19a:	0e 94 8a 00 	call	0x114	; 0x114 <ll_display_char_in_morse_code>
+ 19e:	08 95       	ret
+
+000001a0 <dispaly_message_morse_code>:
+
+/*
+ * Takes *char(string) as input and separates it into individual characters.
+ */
+void dispaly_message_morse_code(char *msg)
+{
+ 1a0:	cf 93       	push	r28
+ 1a2:	df 93       	push	r29
+ 1a4:	ec 01       	movw	r28, r24
+    char *msg_ptr = msg;
+    while(*msg_ptr != '\0') {
+ 1a6:	0a c0       	rjmp	.+20     	; 0x1bc <dispaly_message_morse_code+0x1c>
+        if (*msg_ptr == '/') {
+ 1a8:	8f 32       	cpi	r24, 0x2F	; 47
+ 1aa:	19 f4       	brne	.+6      	; 0x1b2 <dispaly_message_morse_code+0x12>
+            send_space(); 
+ 1ac:	0e 94 4b 00 	call	0x96	; 0x96 <send_space>
+ 1b0:	04 c0       	rjmp	.+8      	; 0x1ba <dispaly_message_morse_code+0x1a>
+        } else {
+            display_char_in_morse_code(*msg_ptr);
+ 1b2:	0e 94 9e 00 	call	0x13c	; 0x13c <display_char_in_morse_code>
+            send_space(); 
+ 1b6:	0e 94 4b 00 	call	0x96	; 0x96 <send_space>
+        }                
+        msg_ptr++;
+ 1ba:	21 96       	adiw	r28, 0x01	; 1
+ * Takes *char(string) as input and separates it into individual characters.
+ */
+void dispaly_message_morse_code(char *msg)
+{
+    char *msg_ptr = msg;
+    while(*msg_ptr != '\0') {
+ 1bc:	88 81       	ld	r24, Y
+ 1be:	81 11       	cpse	r24, r1
+ 1c0:	f3 cf       	rjmp	.-26     	; 0x1a8 <dispaly_message_morse_code+0x8>
+            display_char_in_morse_code(*msg_ptr);
+            send_space(); 
+        }                
+        msg_ptr++;
+    }
+}
+ 1c2:	df 91       	pop	r29
+ 1c4:	cf 91       	pop	r28
+ 1c6:	08 95       	ret
+
+000001c8 <main>:
 
 int main(void)
 {
     // Set pin as output in Data Direction Register
     // DDRB = DDRB or 0010 0000
     DDRB |= (1<<LED_GREEN);
-  fa:	84 b1       	in	r24, 0x04	; 4
-  fc:	80 62       	ori	r24, 0x20	; 32
-  fe:	84 b9       	out	0x04, r24	; 4
+ 1c8:	84 b1       	in	r24, 0x04	; 4
+ 1ca:	80 62       	ori	r24, 0x20	; 32
+ 1cc:	84 b9       	out	0x04, r24	; 4
 
     // Set pin LOW in Data Register (LED off)
     // PORTB = PORTB and 1101 1111
     PORTB &= ~(1<<LED_GREEN);
- 100:	85 b1       	in	r24, 0x05	; 5
- 102:	8f 7d       	andi	r24, 0xDF	; 223
- 104:	85 b9       	out	0x05, r24	; 5
-    
-    // Infinite loop
-    while (1)
-    {
-        send_dot();
- 106:	0e 94 64 00 	call	0xc8	; 0xc8 <send_dot>
-        send_comma();
- 10a:	0e 94 4b 00 	call	0x96	; 0x96 <send_comma>
- 10e:	fb cf       	rjmp	.-10     	; 0x106 <main+0xc>
+ 1ce:	85 b1       	in	r24, 0x05	; 5
+ 1d0:	8f 7d       	andi	r24, 0xDF	; 223
+ 1d2:	85 b9       	out	0x05, r24	; 5
+         * DE2/
+         * de2/
+         */
+        
+        char *msg = "DE2/";
+        dispaly_message_morse_code(msg);
+ 1d4:	88 e4       	ldi	r24, 0x48	; 72
+ 1d6:	91 e0       	ldi	r25, 0x01	; 1
+ 1d8:	0e 94 d0 00 	call	0x1a0	; 0x1a0 <dispaly_message_morse_code>
+ 1dc:	fb cf       	rjmp	.-10     	; 0x1d4 <main+0xc>
 
-00000110 <_exit>:
- 110:	f8 94       	cli
+000001de <_exit>:
+ 1de:	f8 94       	cli
 
-00000112 <__stop_program>:
- 112:	ff cf       	rjmp	.-2      	; 0x112 <__stop_program>
+000001e0 <__stop_program>:
+ 1e0:	ff cf       	rjmp	.-2      	; 0x1e0 <__stop_program>

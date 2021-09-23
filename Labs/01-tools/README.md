@@ -222,3 +222,8 @@ void send_dot(void)
 3. Scheme of Morse code application, i.e. connection of AVR device, LED, resistor, and supply voltage. The image can be drawn on a computer or by hand. Always name all components and their values!
 
    ![Schematic](sch.PNG)
+   
+### Simulation 
+
+[![test](http://img.youtube.com/vi/C2MKxoG7RZs/0.jpg)](http://www.youtube.com/watch?v=C2MKxoG7RZs "Simulation")
+
