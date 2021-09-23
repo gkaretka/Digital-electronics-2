@@ -74,35 +74,17 @@ int main(void)
 {
     // Set pin as output in Data Direction Register
     // DDRB = DDRB or 0010 0000
-    DDRB = DDRB | (1<<LED_GREEN);
+    DDRB |= (1<<LED_GREEN);
 
     // Set pin LOW in Data Register (LED off)
     // PORTB = PORTB and 1101 1111
-    PORTB = PORTB & ~(1<<LED_GREEN);
-
-    // PB1 as input (for now)
-    DDRD &= ~(1 << DDD3);
-    // set PWM for 50% duty cycle at 10bit
-    OCR1A = 0x01FF;
-    TCCR1A |= (1 << COM1A1);
-    // set non-inverting mode
-    TCCR1A |= (1 << WGM11) | (1 << WGM10);
-    // set 10bit phase corrected PWM Mode
-    TCCR1B |= (1 << CS11);
-
+    PORTB &= ~(1<<LED_GREEN);
+    
     // Infinite loop
     while (1)
     {
-        /* Char '/' is used for sending additional spaces
-         * You can try any combination
-         * Tested with: 
-         * BPC/DE2/
-         * DE2/
-         * de2/
-         */
-        
-        char *msg = "DE2/";
-        dispaly_message_morse_code(msg);
+        send_dot();
+        send_comma();
     }
 
     // Will never reach this
@@ -161,7 +143,6 @@ void ll_display_char_in_morse_code(char *char_codes)
 void send_space(void)
 {
     PORTB &= ~(1 << LED_GREEN);
-    DDRD &= ~(1 << DDD3);
     _delay_ms(SPACE_DELAY);
 }
 
@@ -171,11 +152,9 @@ void send_space(void)
 void send_comma(void)
 {
     PORTB |= (1 << LED_GREEN);
-    DDRD |= (1 << DDD3);
     _delay_ms(COMMA_DELAY);
     
     PORTB &= ~(1 << LED_GREEN);
-    DDRD &= ~(1 << DDD3);
     _delay_ms(ONE_SPACE);
 }
 
@@ -185,10 +164,8 @@ void send_comma(void)
 void send_dot(void)
 {
     PORTB |= (1 << LED_GREEN);
-    DDRD |= (1 << DDD3);
     _delay_ms(DOT_DELAY);
     
     PORTB &= ~(1 << LED_GREEN);
-    DDRD &= ~(1 << DDD3);
     _delay_ms(ONE_SPACE);
 }
