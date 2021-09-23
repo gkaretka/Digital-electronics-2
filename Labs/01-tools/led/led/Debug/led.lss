@@ -13,19 +13,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   4 .debug_aranges 00000050  00000000  00000000  00000374  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000099c  00000000  00000000  000003c4  2**0
+  5 .debug_info   00000992  00000000  00000000  000003c4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 0000072f  00000000  00000000  00000d60  2**0
+  6 .debug_abbrev 0000072f  00000000  00000000  00000d56  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000038c  00000000  00000000  0000148f  2**0
+  7 .debug_line   0000038c  00000000  00000000  00001485  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  0000009c  00000000  00000000  0000181c  2**2
+  8 .debug_frame  0000009c  00000000  00000000  00001814  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000430  00000000  00000000  000018b8  2**0
+  9 .debug_str    00000430  00000000  00000000  000018b0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000002b5  00000000  00000000  00001ce8  2**0
+ 10 .debug_loc    000002b5  00000000  00000000  00001ce0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000040  00000000  00000000  00001f9d  2**0
+ 11 .debug_ranges 00000040  00000000  00000000  00001f95  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -350,11 +350,11 @@ int main(void)
  1ce:	85 b1       	in	r24, 0x05	; 5
  1d0:	8f 7d       	andi	r24, 0xDF	; 223
  1d2:	85 b9       	out	0x05, r24	; 5
-         * DE2/
-         * de2/
-         */
-        
-        char *msg = "DE2/";
+     */
+    char *msg = "DE2/";
+    
+    while (1)
+    {
         dispaly_message_morse_code(msg);
  1d4:	88 e4       	ldi	r24, 0x48	; 72
  1d6:	91 e0       	ldi	r25, 0x01	; 1

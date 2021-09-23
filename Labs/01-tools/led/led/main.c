@@ -81,17 +81,18 @@ int main(void)
     PORTB &= ~(1<<LED_GREEN);
     
     // Infinite loop
+    
+    /* Char '/' is used for sending additional spaces
+     * You can try any combination
+     * Tested with: 
+     * BPC/DE2/
+     * DE2/
+     * de2/
+     */
+    char *msg = "DE2/";
+    
     while (1)
     {
-        /* Char '/' is used for sending additional spaces
-         * You can try any combination
-         * Tested with: 
-         * BPC/DE2/
-         * DE2/
-         * de2/
-         */
-        
-        char *msg = "DE2/";
         dispaly_message_morse_code(msg);
     }
 
