@@ -83,8 +83,16 @@ int main(void)
     // Infinite loop
     while (1)
     {
-        send_dot();
-        send_comma();
+        /* Char '/' is used for sending additional spaces
+         * You can try any combination
+         * Tested with: 
+         * BPC/DE2/
+         * DE2/
+         * de2/
+         */
+        
+        char *msg = "DE2/";
+        dispaly_message_morse_code(msg);
     }
 
     // Will never reach this

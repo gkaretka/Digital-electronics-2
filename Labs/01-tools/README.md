@@ -79,6 +79,7 @@ void send_dot(void)
 2. Code for displaying "DE2" in morse code
 
 ```C
+// Morse code array A-Z
 char *morse_alphabet[26] = {
     ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--",
     "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."
@@ -121,8 +122,16 @@ int main(void)
     // Infinite loop
     while (1)
     {
-        send_dot();
-        send_comma();
+        /* Char '/' is used for sending additional spaces
+         * You can try any combination
+         * Tested with: 
+         * BPC/DE2/
+         * DE2/
+         * de2/
+         */
+        
+        char *msg = "DE2/";
+        dispaly_message_morse_code(msg);
     }
 
     // Will never reach this
@@ -173,6 +182,39 @@ void ll_display_char_in_morse_code(char *char_codes)
 
         msg_ptr++;
     }        
+}
+
+/*
+ * Low level send space by manipulating pin and delaying
+ */
+void send_space(void)
+{
+    PORTB &= ~(1 << LED_GREEN);
+    _delay_ms(SPACE_DELAY);
+}
+
+/*
+ * Low level send comma by manipulating pin and delaying
+ */
+void send_comma(void)
+{
+    PORTB |= (1 << LED_GREEN);
+    _delay_ms(COMMA_DELAY);
+    
+    PORTB &= ~(1 << LED_GREEN);
+    _delay_ms(ONE_SPACE);
+}
+
+/*
+ * Low level send dot by manipulating pin and delaying
+ */
+void send_dot(void)
+{
+    PORTB |= (1 << LED_GREEN);
+    _delay_ms(DOT_DELAY);
+    
+    PORTB &= ~(1 << LED_GREEN);
+    _delay_ms(ONE_SPACE);
 }
 ```
 
