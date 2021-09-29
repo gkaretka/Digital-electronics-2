@@ -73,8 +73,6 @@ Link to your `Digital-electronics-2` GitHub repository:
 ```c
 int main(void)
 {
-int main(void)
-{
 	// Set both LEDs pins to output
     DDRC |= 1 << LED_RED; // output
     DDRB |= 1 << LED_GREEN; // output
@@ -95,7 +93,6 @@ int main(void)
 
     // Will never reach this
     return 0;
-}
 }
 ```
 
@@ -136,7 +133,7 @@ int main(void)
 
 1. Scheme of Knight Rider application, i.e. connection of AVR device, five LEDs, resistors, one push button, and supply voltage. The image can be drawn on a computer or by hand. Always name all components and their values!
 
-   [![sch_kr](sch_kr.png)
+![sch_kr](sch_kr.png)
    
 ### Simulation 
 
