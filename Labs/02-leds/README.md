@@ -7,6 +7,18 @@ Link to your `Digital-electronics-2` GitHub repository:
 
 ### Active-low and active-high LEDs
 
+#### Preparation tasks (schematic)
+
+![led_sch](sch.png)
+
+#### Preparation task calculations
+
+![equation](eq.png)
+
+#### Preparation task button connection (schematic)
+
+![button_sch](button_conn.png)
+
 1. Complete tables according to the AVR manual.
 
 | **DDRB** | **Description** |
@@ -61,26 +73,29 @@ Link to your `Digital-electronics-2` GitHub repository:
 ```c
 int main(void)
 {
-    // Green LED at port B
-    // Set pin as output in Data Direction Register...
-    DDRB = DDRB | (1<<LED_GREEN);
-    // ...and turn LED off in Data Register
-    PORTB = PORTB & ~(1<<LED_GREEN);
-
-    // Configure the second LED at port C
-    // WRITE YOUR CODE HERE
-
+int main(void)
+{
+	// Set both LEDs pins to output
+    DDRC |= 1 << LED_RED; // output
+    DDRB |= 1 << LED_GREEN; // output
+    
+    // Reset one, set second
+    PORTC &= ~(1 << LED_RED); // out 0
+    PORTB |= (1 << LED_GREEN); // out 1
+    
     // Infinite loop
     while (1)
-    {
-        // Pause several milliseconds
-        _delay_ms(BLINK_DELAY);
-
-        // WRITE YOUR CODE HERE
+    {		
+			// delay, toggle both LEDs
+            _delay_ms(BLINK_DELAY);
+            PORTC ^= (1 << LED_RED);
+            PORTB ^= (1 << LED_GREEN);    
+        }
     }
 
     // Will never reach this
     return 0;
+}
 }
 ```
 
@@ -90,17 +105,30 @@ int main(void)
 1. Part of the C code listing with syntax highlighting, which toggles LEDs only if push button is pressed. Otherwise, the value of the LEDs does not change. Let the push button is connected to port D:
 
 ```c
-    // Configure Push button at port D and enable internal pull-up resistor
-    // WRITE YOUR CODE HERE
-
+int main(void)
+{
+    DDRC |= 1 << LED_RED; // output
+    DDRB |= 1 << LED_GREEN; // output
+    DDRD &= ~(1 << BUTTON); // input
+    
+    // Reset
+    PORTC &= ~(1 << LED_RED); // out 0
+    PORTB |= (1 << LED_GREEN); // out 1
+    PORTD |= (1 << BUTTON); // pullup
+    
     // Infinite loop
     while (1)
     {
-        // Pause several milliseconds
-        _delay_ms(BLINK_DELAY);
-
-        // WRITE YOUR CODE HERE
+        if (((PIND >> BUTTON) & 1) == 0) {
+            _delay_ms(BLINK_DELAY);
+            PORTC ^= (1 << LED_RED);
+            PORTB ^= (1 << LED_GREEN);    
+        }
     }
+
+    // Will never reach this
+    return 0;
+}
 ```
 
 
@@ -108,4 +136,16 @@ int main(void)
 
 1. Scheme of Knight Rider application, i.e. connection of AVR device, five LEDs, resistors, one push button, and supply voltage. The image can be drawn on a computer or by hand. Always name all components and their values!
 
-   ![your figure]()
+   [![sch_kr](sch_kr.png)
+   
+### Simulation 
+
+1. Without PWM
+
+[![test](http://img.youtube.com/vi/AWYQtBLKQeA/0.jpg)](http://www.youtube.com/watch?v=AWYQtBLKQeA "Simulation")
+
+### With PWM. 
+
+PWM duty cycle affect brightness of LED because this changes average voltage accross LED thus changing current through LED directly affecting luminosity.
+
+[![test](http://img.youtube.com/vi/2FubTD8N8TU/0.jpg)](http://www.youtube.com/watch?v=2FubTD8N8TU "Simulation")
