@@ -84,7 +84,7 @@ int main(void)
     // Infinite loop
     while (1)
     {		
-			// delay, toggle both LEDs
+            // delay, toggle both LEDs
             _delay_ms(BLINK_DELAY);
             PORTC ^= (1 << LED_RED);
             PORTB ^= (1 << LED_GREEN);    
