@@ -1,8 +1,8 @@
-# Lab 2: YOUR_FIRSTNAME FAMILYNAME
+# Lab 2: Gregor Karetka
 
 Link to your `Digital-electronics-2` GitHub repository:
 
-   [https://github.com/...](https://github.com/...)
+   [https://github.com/gkaretka/Digital-electronics-2](https://github.com/gkaretka/Digital-electronics-2)
 
 
 ### Active-low and active-high LEDs
@@ -120,6 +120,91 @@ int main(void)
             _delay_ms(BLINK_DELAY);
             PORTC ^= (1 << LED_RED);
             PORTB ^= (1 << LED_GREEN);    
+        }
+    }
+
+    // Will never reach this
+    return 0;
+}
+```
+
+### Knight rider with PWM and INVERSION (whole code in Digital-electronics-2/Labs/02-leds/led_2/led_2/main.c)
+
+```c
+int main(void)
+{
+    LED_DDR |= ((1 << LED4) | (1 << LED3)  | (1 << LED2) | (1 << LED1) | (1 << LED0)); // led outputs
+    BUTTON_DDR &= ~(1 << BUTTON); // buttons
+    
+    uint8_t register_storage = 0;
+    uint8_t sample_data = 0;
+    uint8_t start = 0;
+    uint8_t perform = 0;
+    
+    // Infinite loop
+    while (1)
+    {
+        // shift register sampler, edge detector
+        _delay_ms(50);
+        sample_data = (sample_data << 1) | ((((BUTTON_PIN >> BUTTON) & 1) == BTN_INVERTED));
+        
+        if ((sample_data & 0xF) == 0x0F) start = (start << 1) | 1; // debounce
+        else if ((sample_data & 0b0000) == 0b000) start = start << 1;
+        
+        if (start == 0b0011) perform = 1; // edge detection
+        
+        if (perform == 1) {
+            for (uint8_t i = 0; i < 5; i++) {
+                register_storage = 1 << i;
+                if (PWM_EN) {
+                    // UP
+                    for (uint8_t j = 0; j < 255; j++) {
+                        LED_PORT = INVERT(LED_PORT | register_storage);
+                        for (uint8_t k = 0; k < j/10; k++) _delay_us(10);
+                        LED_PORT = INVERT(LED_PORT & ~(register_storage));
+                        for (uint8_t k = 0; k < (255-j/10); k++) _delay_us(10);
+                    }
+                    
+                    // DOWN
+                    for (uint8_t j = 255; j > 0; j--) {
+                        LED_PORT = INVERT(LED_PORT | register_storage);
+                        for (uint8_t k = 0; k < j/10; k++) _delay_us(10);
+                        LED_PORT = INVERT(LED_PORT & ~(register_storage));
+                        for (uint8_t k = 0; k < (255-j/10); k++) _delay_us(10);
+                    }
+                } else {
+                    LED_PORT = INVERT(register_storage);
+                    _delay_ms(500);
+                }                
+            }
+                            
+            for (uint8_t i = 0; i < 5; i++) {
+                register_storage = 1 << (4-i);
+                if (PWM_EN) {
+                    // UP
+                    for (uint8_t j = 0; j < 255; j++) {
+                        LED_PORT = INVERT(LED_PORT | register_storage);
+                        for (uint8_t k = 0; k < j/10; k++) _delay_us(10);
+                        LED_PORT = INVERT(LED_PORT & ~(register_storage));
+                        for (uint8_t k = 0; k < (255-j/12); k++) _delay_us(10);
+                    }
+                    
+                    // DOWN
+                    for (uint8_t j = 255; j > 0; j--) {
+                        LED_PORT = INVERT(LED_PORT | register_storage);
+                        for (uint8_t k = 0; k < j/10; k++) _delay_us(10);
+                        LED_PORT = INVERT(LED_PORT & ~(register_storage));
+                        for (uint8_t k = 0; k < (255-j/10); k++) _delay_us(10);
+                    }
+                } else {
+                    LED_PORT = INVERT(register_storage);
+                    _delay_ms(500);
+                }
+            }
+                            
+            LED_PORT = INVERT((LED_PORT & ~((1 << LED4) | (1 << LED3)  | (1 << LED2) | (1 << LED1) | (1 << LED0)))); // disable all
+            perform = 0; // hold edge detector
+            start = 0b10; // ...
         }
     }
 
