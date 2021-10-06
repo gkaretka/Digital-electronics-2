@@ -13,19 +13,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   4 .debug_aranges 00000070  00000000  00000000  0000022c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000009fe  00000000  00000000  0000029c  2**0
+  5 .debug_info   000009fb  00000000  00000000  0000029c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000733  00000000  00000000  00000c9a  2**0
+  6 .debug_abbrev 00000733  00000000  00000000  00000c97  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000003af  00000000  00000000  000013cd  2**0
+  7 .debug_line   000003b5  00000000  00000000  000013ca  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  000000a8  00000000  00000000  0000177c  2**2
+  8 .debug_frame  000000a8  00000000  00000000  00001780  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000043f  00000000  00000000  00001824  2**0
+  9 .debug_str    0000043f  00000000  00000000  00001828  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000000a5  00000000  00000000  00001c63  2**0
+ 10 .debug_loc    000000da  00000000  00000000  00001c67  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000050  00000000  00000000  00001d08  2**0
+ 11 .debug_ranges 00000050  00000000  00000000  00001d41  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -72,8 +72,8 @@ Disassembly of section .text:
   7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 00000080 <GPIO_config_output>:
-/**********************************************************************
- * Function: GPIO_toggle()
+ *           pin_num - Pin designation in the interval 0 to 7
+ * Returns:  none
  **********************************************************************/
 void GPIO_toggle (volatile uint8_t *reg_name, uint8_t pin_num)
 {
@@ -140,8 +140,8 @@ void GPIO_toggle (volatile uint8_t *reg_name, uint8_t pin_num)
   ea:	08 95       	ret
 
 000000ec <GPIO_read>:
-/**********************************************************************
- * Function: GPIO_read()
+ *           pin_num - Pin designation in the interval 0 to 7
+ * Returns:  uint8_t containing 1 or 0
  **********************************************************************/
 uint8_t GPIO_read (volatile uint8_t *reg_name, uint8_t pin_num)
 {
