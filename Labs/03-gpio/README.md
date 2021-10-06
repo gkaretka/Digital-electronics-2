@@ -5,9 +5,9 @@
 | **Data type** | **Number of bits** | **Range** | **Description** |
 | :-: | :-: | :-: | :-- | 
 | `uint8_t`  | 8 | 0, 1, ..., 255 | Unsigned 8-bit integer |
-| `int8_t`   | 8 |  | Signed 8-bit Integer |
+| `int8_t`   | 8 | -128, -127 ... 127 | Signed 8-bit Integer |
 | `uint16_t` | 16 | 0, 1, ..., 65535 | Unsigned 16-bit integer |
-| `int16_t`  | 16 |  | Signed 16-bit integer |
+| `int16_t`  | 16 | −32768, −32767, ... 32767 | Signed 16-bit integer |
 | `float`    | 32 | -3.4e+38, ..., 3.4e+38 | Single-precision floating-point |
 | `void`     | depending on the system(x64: 8 bytes, AVR: 2 bytes) | depending on the system | No return type for function / generic pointer |
 
