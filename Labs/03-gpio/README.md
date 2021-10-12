@@ -96,8 +96,8 @@ int main(void)
         // Pause several milliseconds
         if (GPIO_read(&PIND, BUTTON) == 0) {
             _delay_ms(BLINK_DELAY);
-            PORTC ^= (1 << LED_RED);
-            PORTB ^= (1 << LED_GREEN);
+            GPIO_toggle(&PORTC, LED_RED);
+            GPIO_toggle(&PORTB, LED_GREEN);
         }
     }
 
