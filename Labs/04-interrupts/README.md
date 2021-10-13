@@ -61,12 +61,6 @@ The timer modules can be configured with several special purpose registers. Acco
 
 The state of continuous monitoring of any parameter is called **polling**. The microcontroller keeps checking the status of other devices; and while doing so, it does no other operation and consumes all its processing time for monitoring [[3]](https://www.renesas.com/us/en/support/technical-resources/engineer-school/mcu-programming-peripherals-04-interrupts.html).
 
-While polling is a simple way to check for state changes, there's a cost. If the checking interval is too long, there can be a long lag between occurrence and detection and you may miss the change completely, if the state changes back before you check. A shorter interval will get faster and more reliable detection, but also consumes much more processing time and power, since many more checks will come back negative.
-
-An alternative approach is to utilize **interrupts**. With this method, the state change generates an interrupt signal that causes the CPU to suspend its current operation (and save its current state), then execute the processing associated with the interrupt, and then restore its previous state and resume where it left off.
-
-An interrupt is one of the fundamental features in a microcontroller. It is a signal to the processor emitted by hardware or software indicating an event that needs immediate attention. Whenever an interrupt occurs, the controller completes the execution of the current instruction and starts the execution of an **Interrupt Service Routine (ISR)** or Interrupt Handler. ISR tells the processor or controller what to do when the interrupt occurs [[4]](https://www.tutorialspoint.com/embedded_systems/es_interrupts.htm). After the interrupt code is executed, the program continues exactly where it left off.
-
 Interrupts can be established for events such as a counter's value, a pin changing state, serial communication receiving of information, or the Analog to Digital Converted has finished the conversion process.
 
 See the [ATmega328P datasheet](https://www.microchip.com/wwwproducts/en/ATmega328p) (section **Interrupts > Interrupt Vectors in ATmega328 and ATmega328P**) for sources of interruptions that can occur on ATmega328P. Complete the selected interrupt sources in the following table. The names of the interrupt vectors in C can be found in [C library manual](https://www.nongnu.org/avr-libc/user-manual/group__avr__interrupts.html).
@@ -77,8 +71,8 @@ See the [ATmega328P datasheet](https://www.microchip.com/wwwproducts/en/ATmega32
 ### Timer library
 
 1. In your words, describe the difference between common C function and interrupt service routine.
-   * Function
-   * Interrupt service routine
+   * Function - generic block of code we want to reuse. This block can be called from anywhere in our program.
+   * Interrupt service routine - function to which we jump when interrupt occures, usually short. Main program is halted and after ISR is executed resumed from the same point it was halted in  
 
 2. Part of the header file listing with syntax highlighting, which defines settings for Timer/Counter0:
 
@@ -87,16 +81,127 @@ See the [ATmega328P datasheet](https://www.microchip.com/wwwproducts/en/ATmega32
  * @name  Definitions of Timer/Counter0
  * @note  F_CPU = 16 MHz
  */
-// WRITE YOUR CODE HERE
+/**
+ * @name  Definitions for 8-bit Timer/Counter0
+ * @note  t_OVF = 1/F_CPU * prescaler * 2^n where n = 8, F_CPU = 16 MHz
+ */
+/**
+ * @name  Definitions for 8-bit Timer/Counter0
+ * @note  t_OVF = 1/F_CPU * prescaler * 2^n where n = 8, F_CPU = 16 MHz
+ */
+#define TIM0_stop()                         TCCR0B &= ~((1<<CS02) | (1<<CS01) | (1<<CS00));
+/** @brief Set overflow 16us, prescaler 001 --> 1 */
+#define TIM0_overflow_16us()                TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR0B |= (1<<CS00);
+/** @brief Set overflow 128us, prescaler 010 --> 8 */
+#define TIM0_overflow_128us()               TCCR0B &= ~((1<<CS02) | (1<<CS00)); TCCR0B |= (1<<CS01);
+/** @brief Set overflow 1024 us, prescaler 011 --> 64 */
+#define TIM0_overflow_1024us()              TCCR0B &= ~(1<<CS02); TCCR0B |= (1<<CS01) | (1<<CS00);
+/** @brief Set overflow 4096us, prescaler 100 --> 256 */
+#define TIM0_overflow_4096us()              TCCR0B &= ~((1<<CS01) | (1<<CS00)); TCCR0B |= (1<<CS02);
+/** @brief Set overflow 16384 us, prescaler // 101 --> 1024 */
+#define TIM0_overflow_16384us()             TCCR0B &= ~(1<<CS01); TCCR0B |= (1<<CS02) | (1<<CS00);
+/** @brief Enable overflow interrupt, 1 --> enable */
+#define TIM0_overflow_interrupt_enable()    TIMSK0 |= (1<<TOIE0);
+/** @brief Disable overflow interrupt, 0 --> disable */
+#define TIM0_overflow_interrupt_disable()   TIMSK0 &= ~(1<<TOIE0);
 ```
 
 3. Flowchart figure for function `main()` and interrupt service routine `ISR(TIMER1_OVF_vect)` of application that ensures the flashing of one LED in the timer interruption. When the button is pressed, the blinking is faster, when the button is released, it is slower. Use only a timer overflow and not a delay library.
 
-   ![your figure]()
+   ![blinky_sch](Images/blinky_sch.png)
+
+```c
+static inline void knight_rider();
+
+/* Function definitions ----------------------------------------------*/
+/**********************************************************************
+ * Function: Main function where the program execution begins
+ * Purpose:  Toggle one LED on the Multi-function shield using 
+             the internal 8- or 16-bit Timer/Counter.
+ * Returns:  none
+ **********************************************************************/
+int main(void)
+{
+    // Configuration of LED(s) at port B - active low
+    GPIO_config_output(&DDRB, LED_D1);
+    GPIO_write_high(&PORTB, LED_D1); // high
+    
+    GPIO_config_input_pullup(&DDRC, BUTTON);
+
+    // Configuration of 16-bit Timer/Counter1 for LED blinking
+    // Set the overflow prescaler to 262 ms and enable interrupt
+    TIM1_overflow_262ms();
+    TIM1_overflow_interrupt_enable();
+
+    // Enables interrupts by setting the global interrupt mask
+    sei();
+    
+    enum speed_states {SPEED_4MS = 0, SPEED_33MS = 1, SPEED_262MS = 2, SPEED_1S = 3, SPEED_4S = 4};
+    uint8_t speed_state = SPEED_262MS;
+    
+    // Infinite loop
+    while (1)
+    {
+        /* Empty loop. All subsequent operations are performed exclusively 
+         * inside interrupt service routines ISRs */
+        
+        if (GPIO_read(&PINC, BUTTON) == 0) {
+            switch(speed_state) {
+                case (SPEED_4S):
+                    speed_state = SPEED_1S;
+                    TIM1_overflow_1s();
+                    break;
+                    
+                case (SPEED_1S):
+                    speed_state = SPEED_262MS;
+                    TIM1_overflow_262ms();
+                    break;
+                
+                case (SPEED_262MS):
+                    speed_state = SPEED_33MS;
+                    TIM1_overflow_33ms();
+                    break;
+                
+                case (SPEED_33MS):
+                    speed_state = SPEED_4MS;
+                    TIM1_overflow_4ms();
+                    break;
+                
+                case (SPEED_4MS):
+                    speed_state = SPEED_4S;
+                    TIM1_overflow_4s();
+                    break;
+                    
+                default:
+                    speed_state = SPEED_4S;
+                    TIM1_overflow_4s();
+                    break;
+            }
+            
+            _delay_ms(500);
+        }
+    }
+
+    // Will never reach this
+    return 0;
+}
+
+/* Interrupt service routines ----------------------------------------*/
+/**********************************************************************
+ * Function: Timer/Counter1 overflow interrupt
+ * Purpose:  Toggle D1 LED on Multi-function shield.
+ **********************************************************************/
+ISR(TIMER1_OVF_vect)
+{
+   GPIO_toggle(&PORTB, LED_D1);
+}
+```
 
 
 ### Knight Rider
 
 1. Scheme of Knight Rider application with four LEDs and a push button, connected according to Multi-function shield. Connect AVR device, LEDs, resistors, push button, and supply voltage. The image can be drawn on a computer or by hand. Always name all components and their values!
 
-   ![your figure]()
+   ![KR Sch](Images/sch_kr.png)
+
+   ![KR Functional](Images/kr_sch.png)
