@@ -202,6 +202,10 @@ ISR(TIMER1_OVF_vect)
 
 1. Scheme of Knight Rider application with four LEDs and a push button, connected according to Multi-function shield. Connect AVR device, LEDs, resistors, push button, and supply voltage. The image can be drawn on a computer or by hand. Always name all components and their values!
 
+#### Schematic
+
    ![KR Sch](Images/sch_kr.png)
+
+#### Flow diagram 
 
    ![KR Functional](Images/kr_sch.png)
