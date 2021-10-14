@@ -1,4 +1,8 @@
-# Lab 5: Display devices, 7-segment display
+# Lab 5: Gregor Karetka
+
+Link to your `Digital-electronics-2` GitHub repository:
+
+   [https://github.com/gkaretka/Digital-electronics-2](https://github.com/gkaretka/Digital-electronics-2)
 
 ### Learning objectives
 
