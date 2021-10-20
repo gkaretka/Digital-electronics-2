@@ -67,6 +67,8 @@ void SEG_init(void)
 void SEG_update_shift_regs(uint8_t segments, uint8_t position)
 {
     uint8_t bit_number;
+    segments = segment_value[segments];     // 0, 1, ..., 9
+    position = segment_position[position];  // 0, 1, 2, 3
 
     // Pull LATCH, CLK, and DATA low
     GPIO_write_low(&PORT_LATCH, SEG_LATCH);
@@ -136,5 +138,12 @@ void SEG_clear (void)
  **********************************************************************/
 void SEG_clk_2us(void)
 {
-    
+    // Wait 1 us
+    _delay_us(1);
+    // Pull CLK high
+    PORT_CLK |= (1 << SEG_CLK);
+    // Wait 1 us
+    _delay_us(1);
+    // Pull CLK low
+    PORT_CLK &= ~(1 << SEG_CLK);
 }

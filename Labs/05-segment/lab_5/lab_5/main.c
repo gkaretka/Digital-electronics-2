@@ -20,6 +20,8 @@
 #include "segment.h"        // Seven-segment display library for AVR-GCC
 #include <util/delay.h>
 
+uint16_t val = 0;
+
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
  * Function: Main function where the program execution begins
@@ -31,16 +33,16 @@ int main(void)
 {
     // Configure SSD signals
     SEG_init();
-
-    // Test of SSD: display number '3' at position 0
-    SEG_update_shift_regs(0b00001101, 0b00010000);
+    SEG_clear();
     
     // Configure 16-bit Timer/Counter1 for Decimal counter
+    TIM1_overflow_33ms();
+    TIM0_overflow_128us();
     // Set the overflow prescaler to 262 ms and enable interrupt
-
-
+    TIM1_overflow_interrupt_enable();
+    TIM0_overflow_interrupt_enable();
     // Enables interrupts by setting the global interrupt mask
-
+    sei();
 
     // Infinite loop
     while (1)
@@ -60,6 +62,22 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
-    // WRITE YOUR CODE HERE
+    val++;
+    if (val == 9999) val = 0;
+}
 
+ISR(TIMER0_OVF_vect)
+{
+    static uint8_t pos = 0;  // This line will only run the first time
+    static int pow10[5] = { 1, 10, 100, 1000, 10000 };
+    
+    // calculate digit from number and pos
+    uint16_t loc_val = (val % pow10[pos+1]) / (pow10[pos]);
+    
+    // Update segment
+    SEG_update_shift_regs(loc_val, pos);
+    
+    // Increment to go to next segment
+    pos++;
+    if (pos == 4) pos = 0;
 }
