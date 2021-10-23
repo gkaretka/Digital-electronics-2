@@ -4,6 +4,37 @@ Link to your `Digital-electronics-2` GitHub repository:
 
    [https://github.com/gkaretka/Digital-electronics-2](https://github.com/gkaretka/Digital-electronics-2)
 
+# Lab 6: Display devices, LCD display
+
+### Learning objectives
+
+After completing this lab you will be able to:
+   * Use text-based LCD
+   * Understand the digital communication between MCU and HD44780
+   * Use library functions for LCD
+   * Generate custom characters on LCD
+
+The purpose of the laboratory exercise is to understand the serial control of Hitachi HD44780-based LCD character display and how to define custom characters. Another goal is to learn how to read documentation for library functions and use them in your own project.
+
+<a name="preparation"></a>
+## Preparation tasks (done before the lab at home)
+
+Use schematic of the [LCD keypad shield](../../Docs/arduino_shield.pdf) and find out the connection of LCD display. What data and control signals are used? What is the meaning of these signals?
+
+![Timing parallel](Images/lcd_schematic.png)
+
+   | **LCD signal(s)** | **AVR pin(s)** | **Description** |
+   | :-: | :-: | :-- |
+   | RS | PB0 | Register selection signal. Selection between Instruction register (RS=0) and Data register (RS=1) |
+   | R/W | GND | Read/write (active low) selector |
+   | E | PB1 | Enable: Starts data read/write |
+   | D[3:0] | N/C (we use 4-bit mode) |  Four low order bidirectional tristate data bus pins. Used for data transfer and receive between the MPU and the HD44780U. These pins are not used during 4-bit operation |
+   | D[7:4] | PD4, PD5, PD6, PD7 |  Four high order bidirectional tristate data bus pins. Used for data transfer and receive between the MPU and the HD44780U. DB7 can be used as a busy flag. |
+
+What is the ASCII table? What are the codes/values for uppercase letters `A` to `Z`, lowercase letters `a` to `z`, and numbers `0` to `9` in this table?
+
+   ![Timing parallel](Images/ascii_table.png)
+
 ### LCD display module
 
 1. In your words, describe what ASCII table is.
