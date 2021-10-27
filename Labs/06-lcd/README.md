@@ -35,6 +35,22 @@ What is the ASCII table? What are the codes/values for uppercase letters `A` to 
 
    ![Timing parallel](Images/ascii_table.png)
 
+<a name="part3"></a>
+## Part 3: Library for HD44780 based LCDs
+
+In the lab, we are using [LCD library for HD44780 based LCDs](http://www.peterfleury.epizy.com/avr-software.html) developed by Peter Fleury. Use the online manual of LCD library and add the input parameters and description of the following functions.
+
+   | **Function name** | **Function parameters** | **Description** | **Example** |
+   | :-- | :-- | :-- | :-- |
+   | `lcd_init` | `LCD_DISP_OFF`<br>`LCD_DISP_ON`<br>`LCD_DISP_ON_CURSOR`<br>`LCD_DISP_ON_CURSOR_BLINK` | Display off<br>Display on, cursor off <br>Display on, cursor on<br>display on, cursor on, blink char |
+   | `lcd_clrscr` | none | Clear display and set cursor to home position.| `lcd_clrscr();` |
+   | `lcd_gotoxy` | uint8_t x position, uint8_t y position | Set cursor to specified position. | `lcd_gotoxy(0, 1);` |
+   | `lcd_putc` | char c, to be displayed | Display character at current cursor position. | `lcd_putc('x');` |
+   | `lcd_puts` | char *s, array of chars | Display string without auto linefeed. | `lcd_puts("msg");` |
+   | `lcd_command` |LCD_CLR<br>LCD_HOME<br>etc ... (see) | Send LCD controller instruction command. | `lcd_command(LCD_CLR);` |
+   | `lcd_data` | uint8_t data, to be sent | Send data byte to LCD controller. | `lcd_data('c');` |
+
+
 ### LCD display module
 
 1. In your words, describe what ASCII table is.
