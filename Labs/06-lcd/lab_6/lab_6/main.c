@@ -28,11 +28,29 @@
  *           Timer/Counter2 overflows.
  * Returns:  none
  **********************************************************************/
+
+uint8_t customChars[] = {
+    0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000,
+    0b10000, 0b10000, 0b10000, 0b10000, 0b10000, 0b10000, 0b10000, 0b10000,
+    0b11000, 0b11000, 0b11000, 0b11000, 0b11000, 0b11000, 0b11000, 0b11000,
+    0b11100, 0b11100, 0b11100, 0b11100, 0b11100, 0b11100, 0b11100, 0b11100,
+    0b11110, 0b11110, 0b11110, 0b11110, 0b11110, 0b11110, 0b11110, 0b11110,
+    0b11111, 0b11111, 0b11111, 0b11111, 0b11111, 0b11111, 0b11111, 0b11111,
+};
+
+void store_custom_char(uint8_t addr, uint8_t *custom_char);
+
 int main(void)
 {
     // Initialize LCD display
     lcd_init(LCD_DISP_ON);
-
+    
+    for (uint8_t i = 0; i < 1; i++) store_custom_char(i, customChars);
+    
+    lcd_clrscr();
+    for (uint8_t i = 0; i < 8; i++) lcd_putc(i);
+    
+    _delay_ms(1000);
     // Put string(s) at LCD display
     lcd_gotoxy(1, 0);
     lcd_puts("LCD Test");
@@ -86,14 +104,21 @@ ISR(TIMER2_OVF_vect)
             if (pos == 0) lcd_putc(':');
         }
         
-        for (int8_t pos = 3; pos >= 1; pos--) {
+        for (int8_t pos = 3; pos >= 0; pos--) {
             to_display = ((cnt_s % pow10[pos+1]) / (pow10[pos])) + '0';
             lcd_putc(to_display);
             if (pos == 2) lcd_putc('.');
         }
          
         lcd_gotoxy(11, 0);
-        lcd_putc('a');
+        // seconds to power of 2
+        uint8_t seconds = ((cnt_s % pow10[4]) / (pow10[3])) * 10 + ((cnt_s % pow10[3]) / (pow10[2]));
+        uint16_t cnt_s_pow_2 = seconds * seconds;
+        for (int8_t pos = 3; pos >= 0; pos--) {
+            to_display = ((cnt_s_pow_2 % pow10[pos+1]) / (pow10[pos])) + '0';
+            lcd_putc(to_display);
+        }
+        
         lcd_gotoxy(1, 1);
         lcd_putc('b');
         lcd_gotoxy(11, 1);
@@ -107,4 +132,20 @@ ISR(TIMER2_OVF_vect)
         }            
     }
     // Else do nothing and exit the ISR
+}
+
+void store_custom_char(uint8_t addr, uint8_t *custom_char)
+{
+    // Initialize LCD display
+    lcd_init(LCD_DISP_ON);
+
+    // Set pointer to beginning of CGRAM memory
+    lcd_command(addr << LCD_CGRAM);
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        // Store all new chars to memory line by line
+        lcd_data(custom_char[i+addr]);
+    }
+    // Set DDRAM address
+    lcd_command(1 << LCD_DDRAM);
 }
