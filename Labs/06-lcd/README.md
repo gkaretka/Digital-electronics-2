@@ -65,7 +65,7 @@ In the lab, we are using [LCD library for HD44780 based LCDs](http://www.peterfl
 
 1. Flowchart figure for `TIMER2_OVF_vect` interrupt service routine which overflows every 16&nbsp;ms but it updates the stopwatch LCD approximately every 100&nbsp;ms (6 x 16&nbsp;ms = 100&nbsp;ms). Display tenths of a second and seconds `00:seconds.tenths`. Let the stopwatch counts from `00:00.0` to `00:59.9` and then starts again. The image can be drawn on a computer or by hand. Use clear descriptions of the individual steps of the algorithms.
 
-   ![your figure]()
+   ![Stopwatch](Images/stopwatch.png)
 
 
 ### Custom characters
@@ -75,9 +75,26 @@ In the lab, we are using [LCD library for HD44780 based LCDs](http://www.peterfl
 ```c
 /* Variables ---------------------------------------------------------*/
 // Custom character definition
-uint8_t customChar[16] = {
-    // WRITE YOUR CODE HERE
+uint8_t custom_char_1[8] = {
+    0b00111,
+    0b01110,
+    0b11100,
+    0b11000,
+    0b11100,
+    0b01110,
+    0b00111,
+    0b00011
+};
 
+uint8_t custom_char_2[8] = {
+    0b01100,
+    0b01100,
+    0b01100,
+    0b01100,
+    0b01100,
+    0b00000,
+    0b01100,
+    0b01100
 };
 ```
 
@@ -88,4 +105,4 @@ Consider a kitchen alarm with an LCD, one LED and three push buttons: start, +1 
 
 1. Scheme of kitchen alarm; do not forget the supply voltage. The image can be drawn on a computer or by hand. Always name all components and their values.
 
-   ![your figure]()
+   ![Kitchen timer sch](Images/kitchen_timer_sch.png)

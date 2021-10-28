@@ -29,14 +29,28 @@
  * Returns:  none
  **********************************************************************/
 
-uint8_t customChars[] = {
-    0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000,
-    0b10000, 0b10000, 0b10000, 0b10000, 0b10000, 0b10000, 0b10000, 0b10000,
-    0b11000, 0b11000, 0b11000, 0b11000, 0b11000, 0b11000, 0b11000, 0b11000,
-    0b11100, 0b11100, 0b11100, 0b11100, 0b11100, 0b11100, 0b11100, 0b11100,
-    0b11110, 0b11110, 0b11110, 0b11110, 0b11110, 0b11110, 0b11110, 0b11110,
-    0b11111, 0b11111, 0b11111, 0b11111, 0b11111, 0b11111, 0b11111, 0b11111,
+uint8_t custom_char_1[8] = {
+    0b00111,
+    0b01110,
+    0b11100,
+    0b11000,
+    0b11100,
+    0b01110,
+    0b00111,
+    0b00011
 };
+
+uint8_t custom_char_2[8] = {
+    0b01100,
+    0b01100,
+    0b01100,
+    0b01100,
+    0b01100,
+    0b00000,
+    0b01100,
+    0b01100
+};
+
 
 void store_custom_char(uint8_t addr, uint8_t *custom_char);
 
@@ -45,7 +59,8 @@ int main(void)
     // Initialize LCD display
     lcd_init(LCD_DISP_ON);
     
-    for (uint8_t i = 0; i < 1; i++) store_custom_char(i, customChars);
+    store_custom_char(0, custom_char_1);
+    store_custom_char(1, custom_char_1);
     
     lcd_clrscr();
     for (uint8_t i = 0; i < 8; i++) lcd_putc(i);
