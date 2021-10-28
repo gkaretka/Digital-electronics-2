@@ -42,7 +42,7 @@ In the lab, we are using [LCD library for HD44780 based LCDs](http://www.peterfl
 
    | **Function name** | **Function parameters** | **Description** | **Example** |
    | :-- | :-- | :-- | :-- |
-   | `lcd_init` | `LCD_DISP_OFF`<br>`LCD_DISP_ON`<br>`LCD_DISP_ON_CURSOR`<br>`LCD_DISP_ON_CURSOR_BLINK` | Display off<br>Display on, cursor off <br>Display on, cursor on<br>display on, cursor on, blink char |
+   | `lcd_init` | `LCD_DISP_OFF`<br>`LCD_DISP_ON`<br>`LCD_DISP_ON_CURSOR`<br>`LCD_DISP_ON_CURSOR_BLINK` | Display off<br>Display on, cursor off <br>Display on, cursor on<br>display on, cursor on, blink char | `lcd_init(LCD_DISP_ON_CURSOR)` |
    | `lcd_clrscr` | none | Clear display and set cursor to home position.| `lcd_clrscr();` |
    | `lcd_gotoxy` | uint8_t x position, uint8_t y position | Set cursor to specified position. | `lcd_gotoxy(0, 1);` |
    | `lcd_putc` | char c, to be displayed | Display character at current cursor position. | `lcd_putc('x');` |
