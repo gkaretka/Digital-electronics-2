@@ -1,0 +1,25 @@
+\documentclass{article}
+\usepackage{amsmath}
+\begin{document}
+\begin{flushleft}
+Calculation of voltage values on pin PC0[A0] if one button is pressed at each time.
+\begin{align*}
+U_{PC0_{Right}}&=U\frac{0}{R2}=5\cdot \frac{0\ \textrm{k}\Omega }{3\ \textrm{k}\Omega }= 0\ \textrm{V} \\ \\
+U_{PC0_{Up}}&=U\frac{R3}{R2+R3}=5\cdot \frac{0.33\ \textrm{k}\Omega }{3.33\ \textrm{k}\Omega }= 0.495\ \textrm{V} \\ \\
+U_{PC0_{Down}}&=U\frac{R3+R4}{R2+R3+R4}=5\cdot \frac{0.95\ \textrm{k}\Omega }{3.95\ \textrm{k}\Omega }= 1.203\ \textrm{V} \\ \\
+U_{PC0_{Left}}&=U\frac{R3+R4+R5}{R2+R3+R4+R5}=5\cdot \frac{1.95\ \textrm{k}\Omega }{4.95\ \textrm{k}\Omega }= 1.970\ \textrm{V} \\ \\
+U_{PC0_{Select}}&=U\frac{R3+R4+R5+R6}{R2+R3+R4+R5+R6}=5\cdot \frac{5.25\ \textrm{k}\Omega }{8.25\ \textrm{k}\Omega }= 3.182\ \textrm{V}
+\end{align*}
+\\Calculation when no button is pressed
+\begin{align*}
+U_{PC0_{Right}}&=U\frac{Inf}{R2+Inf}=5\cdot \frac{Inf\ \textrm{k}\Omega }{Inf\ \textrm{k}\Omega }	\approx 5\cdot \frac{1}{1} = 5\ \textrm{V} \\ \\
+\end{align*}
+\\Calculation of ADC values for given voltage.
+\begin{align*}
+V_{Ref} &= 5 \textrm{V} \\
+n &= 10 \textrm{bit} \\
+ADC &=\frac{U_{PC0}}{V_{Ref}} \cdot (2^{n} - 1) = \frac{0.495}{5} \cdot (2^{10} - 1) = 101\ \textrm{[-]}\\
+\end{align*}
+\end{flushleft}
+
+\end{document}
