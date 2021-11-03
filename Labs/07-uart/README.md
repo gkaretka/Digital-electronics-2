@@ -50,3 +50,104 @@ In the lab, we are using [UART library](http://www.peterfleury.epizy.com/avr-sof
    | `uart_getc` | `void` | Get received byte from ringbuffer. | `uint8_t c = uart_getc();`
    | `uart_putc` | `unsigned char data` | Put byte to ringbuffer for transmitting via UART. | `uart_putc('c');`
    | `uart_puts` | `const char *s` | Put string to ringbuffer for transmitting via UART. | `uart_puts("msg");`
+
+Code listing of ACD interrupt service routine for sending data to the LCD/UART and identification of the pressed button. Always use syntax highlighting and meaningful comments:
+
+```c
+/**********************************************************************
+ * Function: ADC complete interrupt
+ * Purpose:  Display value on LCD and send it to UART.
+ **********************************************************************/
+ISR(ADC_vect)
+{
+    uint16_t value = 0;
+    char lcd_string[4] = "0000";
+    value = ADC;                  // Copy ADC result to 16-bit variable
+    
+    // Clear display and convert to deca (and show)
+    lcd_gotoxy(8, 0);
+    lcd_puts("    ");
+    itoa(value, lcd_string, 10);  // Convert decimal value to string
+    lcd_gotoxy(8, 0);
+    lcd_puts(lcd_string);
+    
+    // UART: " value: xxxx "
+    uart_puts("\033[4;32m");
+    uart_puts(" value: ");
+    uart_puts(lcd_string);
+    uart_puts(" ");
+    
+    // Clear display and display hexa value
+    lcd_gotoxy(13, 0);
+    lcd_puts("    ");
+    itoa(value, lcd_string, 16);  // Convert decimal value to string
+    lcd_gotoxy(13, 0);
+    lcd_puts(lcd_string);
+    
+    // hexa string + newline
+    uart_puts(lcd_string);
+    uart_puts("\r\n   key: ");
+    
+    // clear key display
+    lcd_gotoxy(8, 1);
+    lcd_puts("      ");
+    
+    // Display key on LCD and serial 
+    lcd_gotoxy(8, 1);
+    if (value < 75) {
+        lcd_puts("Right");
+        uart_puts("Right");
+    } else if (value < 150) {
+        lcd_puts("Up");
+        uart_puts("Up");
+    } else if (value < 350) {
+        lcd_puts("Down");
+        uart_puts("Down");
+    } else if (value < 550) {
+        lcd_puts("Left");
+        uart_puts("Left");
+    } else if (value < 800) {
+        lcd_puts("Select");
+        uart_puts("Select");
+    } else {
+        lcd_puts("None");
+        uart_puts("None");
+    }
+    
+    // UART 2xnewlines
+    uart_puts("\r\n\r\n");
+}
+```
+### UART communication
+
+1. (Hand-drawn) picture of UART signal when transmitting three character data `De2` in 4800 7O2 mode (7 data bits, odd parity, 2 stop bits, 4800&nbsp;Bd).
+
+   ![your figure](Images/uart_hd.jpg)
+
+2. Flowchart figure for function `uint8_t get_parity(uint8_t data, uint8_t type)` which calculates a parity bit of input 8-bit `data` according to parameter `type`. The image can be drawn on a computer or by hand. Use clear descriptions of the individual steps of the algorithms.
+
+   ![your figure](Images/pb_calculator.png)
+
+### C code for `uint8_t get_parity(uint8_t data, uint8_t type)`
+
+```c
+uint8_t get_parity(uint8_t data, uint8_t type)
+{
+    uint8_t pbl = type;
+
+    for (int8_t i = 0; i < 8; i++) {
+        pbl = (data & 1 ) ^ pbl;
+        data >>= 1;
+    }
+
+    return pbl;
+}
+```
+
+### Temperature meter
+
+Consider an application for temperature measurement and display. Use temperature sensor [TC1046](http://ww1.microchip.com/downloads/en/DeviceDoc/21496C.pdf), LCD, one LED and a push button. After pressing the button, the temperature is measured, its value is displayed on the LCD and data is sent to the UART. When the temperature is too high, the LED will start blinking.
+
+1. Scheme of temperature meter. The image can be drawn on a computer or by hand. Always name all components and their values.
+
+![temp meas](Images/temp_meas.png)

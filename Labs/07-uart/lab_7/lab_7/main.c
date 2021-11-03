@@ -136,33 +136,28 @@ ISR(ADC_vect)
     uart_puts(lcd_string);
     uart_puts("\r\n   key: ");
     
-    // clear display
+    // clear key display
     lcd_gotoxy(8, 1);
     lcd_puts("      ");
     
-    // Display on LCD and serial 
+    // Display key on LCD and serial 
+    lcd_gotoxy(8, 1);
     if (value < 75) {
-        lcd_gotoxy(8, 1);
         lcd_puts("Right");
         uart_puts("Right");
     } else if (value < 150) {
-        lcd_gotoxy(8, 1);
         lcd_puts("Up");
         uart_puts("Up");
     } else if (value < 350) {
-        lcd_gotoxy(8, 1);
         lcd_puts("Down");
         uart_puts("Down");
     } else if (value < 550) {
-        lcd_gotoxy(8, 1);
         lcd_puts("Left");
         uart_puts("Left");
     } else if (value < 800) {
-        lcd_gotoxy(8, 1);
         lcd_puts("Select");
         uart_puts("Select");
     } else {
-        lcd_gotoxy(8, 1);
         lcd_puts("None");
         uart_puts("None");
     }
