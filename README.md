@@ -434,7 +434,7 @@ ISR(TIMER0_OVF_vect)
    | `uart_putc` | `unsigned char data` | Put byte to ringbuffer for transmitting via UART. | `uart_putc('c');`
    | `uart_puts` | `const char *s` | Put string to ringbuffer for transmitting via UART. | `uart_puts("msg");`
 
-   ```c
+```c
 /**********************************************************************
  * Function: ADC complete interrupt
  * Purpose:  Display value on LCD and send it to UART.
